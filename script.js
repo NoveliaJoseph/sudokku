@@ -148,6 +148,8 @@ const app = {
         this.btnModalClose = document.getElementById('btn-modal-close');
         this.modalTitle = document.getElementById('modal-title');
         this.modalMessage = document.getElementById('modal-message');
+        this.difficultySelect = document.getElementById('difficulty-select');
+        this.difficultyDisplay = document.getElementById('difficulty-display');
     },
 
     bindEvents() {
@@ -170,10 +172,15 @@ const app = {
     },
 
     startNewGame() {
-        const gameData = this.csp.generateNewGame();
+        const difficulty = this.difficultySelect ? this.difficultySelect.value : 'Medium';
+        const gameData = this.csp.generateNewGame(difficulty);
         this.initialBoard = gameData.initial.map(row => [...row]);
         this.solutionBoard = gameData.solution;
         
+        if (this.difficultyDisplay) {
+            this.difficultyDisplay.textContent = difficulty;
+        }
+
         // Current board tracks user progress
         this.currentBoard = this.initialBoard.map(row => [...row]);
         

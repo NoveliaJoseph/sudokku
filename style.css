@@ -265,6 +265,25 @@ header p {
     justify-content: center;
 }
 
+.difficulty-select {
+    padding: 14px 20px;
+    border-radius: 50px;
+    background: #1F2937;
+    color: var(--text-color);
+    border: 2px solid #4B5563;
+    font-family: var(--font-main);
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.difficulty-select:hover, .difficulty-select:focus {
+    border-color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.05);
+}
+
 button.primary-btn,
 button.secondary-btn {
     padding: 14px 28px;

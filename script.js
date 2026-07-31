@@ -135,6 +135,7 @@ const app = {
     init() {
         this.cacheDOM();
         this.bindEvents();
+        this.initTheme();
         this.startNewGame();
     },
 
@@ -151,6 +152,7 @@ const app = {
         this.difficultySelect = document.getElementById('difficulty-select');
         this.difficultyDisplay = document.getElementById('difficulty-display');
         this.bestTimerEl = document.getElementById('best-timer');
+        this.btnThemeToggle = document.getElementById('btn-theme-toggle');
     },
 
     bindEvents() {
@@ -158,6 +160,9 @@ const app = {
         this.btnCheck.addEventListener('click', () => this.checkSolution());
         this.numpad.addEventListener('click', (e) => this.handleNumpad(e));
         this.btnModalClose.addEventListener('click', () => this.closeModal());
+        if (this.btnThemeToggle) {
+            this.btnThemeToggle.addEventListener('click', () => this.toggleTheme());
+        }
         
         // Keyboard support
         document.addEventListener('keydown', (e) => {
@@ -170,6 +175,23 @@ const app = {
                 this.moveSelection(e.key);
             }
         });
+    },
+
+    initTheme() {
+        const savedTheme = localStorage.getItem('sudoku_theme') || 'dark';
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-theme');
+            if (this.btnThemeToggle) this.btnThemeToggle.textContent = '🌙';
+        } else {
+            document.body.classList.remove('light-theme');
+            if (this.btnThemeToggle) this.btnThemeToggle.textContent = '☀️';
+        }
+    },
+
+    toggleTheme() {
+        const isLight = document.body.classList.toggle('light-theme');
+        localStorage.setItem('sudoku_theme', isLight ? 'light' : 'dark');
+        if (this.btnThemeToggle) this.btnThemeToggle.textContent = isLight ? '🌙' : '☀️';
     },
 
     startNewGame() {

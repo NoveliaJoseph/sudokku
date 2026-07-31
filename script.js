@@ -150,6 +150,7 @@ const app = {
         this.modalMessage = document.getElementById('modal-message');
         this.difficultySelect = document.getElementById('difficulty-select');
         this.difficultyDisplay = document.getElementById('difficulty-display');
+        this.bestTimerEl = document.getElementById('best-timer');
     },
 
     bindEvents() {
@@ -180,6 +181,8 @@ const app = {
         if (this.difficultyDisplay) {
             this.difficultyDisplay.textContent = difficulty;
         }
+        
+        this.updateBestTimeDisplay(difficulty);
 
         // Current board tracks user progress
         this.currentBoard = this.initialBoard.map(row => [...row]);
@@ -189,6 +192,16 @@ const app = {
         this.startTimer();
         this.isGameActive = true;
         this.selectedCell = null;
+    },
+
+    updateBestTimeDisplay(difficulty) {
+        if (!this.bestTimerEl) return;
+        const bestTime = localStorage.getItem(`sudoku_best_time_${difficulty}`);
+        if (bestTime) {
+            this.bestTimerEl.textContent = this.formatTime(parseInt(bestTime));
+        } else {
+            this.bestTimerEl.textContent = '--:--';
+        }
     },
 
     renderBoard() {
@@ -347,9 +360,20 @@ const app = {
     },
 
     gameWon() {
+        const difficulty = this.difficultySelect ? this.difficultySelect.value : 'Medium';
+        const currentBest = localStorage.getItem(`sudoku_best_time_${difficulty}`);
+        let isNewRecord = false;
+        
+        if (!currentBest || this.timeElapsed < parseInt(currentBest)) {
+            localStorage.setItem(`sudoku_best_time_${difficulty}`, this.timeElapsed);
+            isNewRecord = true;
+            this.updateBestTimeDisplay(difficulty);
+        }
+        
         this.isGameActive = false;
         clearInterval(this.timerInterval);
-        this.showModal('Splendid!', `You solved it in ${this.formatTime(this.timeElapsed)}`);
+        const recordText = isNewRecord ? " 🎉 New Personal Best!" : "";
+        this.showModal('Splendid!', `You solved it in ${this.formatTime(this.timeElapsed)}.${recordText}`);
     },
 
     startTimer() {
